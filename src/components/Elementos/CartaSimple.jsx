@@ -15,7 +15,7 @@ const CartaSimple = ({ product , agregarCarrito, eliminarCarrito, mostrarAgregar
         <Card.Title>{product.title}</Card.Title>
         <Card.Subtitle className="mb-2 text-secondary">{product.category}</Card.Subtitle>
         <Card.Text style={{ flexGrow: 1 }}>
-          <strong>Precio:</strong> ${product.price.toFixed(2)} <br />      
+          <strong>Precio:</strong> ${parseFloat(product.price).toFixed(2)} <br />      
         </Card.Text>
         <div className="d-flex justify-content-between mt-3">
           {mostrarAgregar && (

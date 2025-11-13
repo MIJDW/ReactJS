@@ -1,7 +1,10 @@
 import useProductos from './Personalizados/useProductos';
 import CartaSimple from './Elementos/CartaSimple';
 import Main from './Semantico/Main'
-const Inicio = ({agregarCarrito, eliminarCarrito}) => {
+import { useContext } from 'react';
+import { CarritoContext } from './Contexto/CarritoContext';
+const Inicio = () => {
+    const {agregarCarrito, eliminarCarrito} = useContext(CarritoContext);
     return (
         <Main 
         useHook={useProductos} 

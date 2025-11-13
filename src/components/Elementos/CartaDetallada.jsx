@@ -13,7 +13,7 @@ const CartaDetallada = ({ product , agregarCarrito, eliminarCarrito, mostrarAgre
         <Card.Subtitle className="mb-2 text-secondary">{product.category}</Card.Subtitle>
         <Card.Text style={{ flexGrow: 1 }}>
             <strong>Descripción:</strong> {product.description} <br />
-            <strong>Precio:</strong> ${product.price.toFixed(2)} <br />
+            <strong>Precio:</strong> ${parseFloat(product.price).toFixed(2)} <br />
             <strong>Rating:</strong> {product.rating.rate} ⭐ ({product.rating.count} reviews)
         </Card.Text>
             <div className="d-flex justify-content-between mt-3">
