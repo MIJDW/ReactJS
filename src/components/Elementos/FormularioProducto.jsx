@@ -1,96 +1,133 @@
-import { useState } from "react";
-import { Form, Button, Container, Row, Col, Card } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Modal, Form, Button, Row, Col, Card } from "react-bootstrap";
+import { useProductosContext } from "../Contexto/ProductoContext";
 
-const FormProducto = ({ onAgregar }) => {
+const FormularioProducto = ({ mostrar, onCerrar, modo = "agregar", productoInicial = {} }) => {
+  const { agregarProducto, editarProducto } = useProductosContext();
   const [errores, setErrores] = useState({});
+  const [cargando, setCargando] = useState(false);
   const [producto, setProducto] = useState({
     title: "",
     price: "",
     description: "",
     category: "",
     image: "",
-    rating: {
-      rate: "",
-      count: ""
-    }
+    rating: { rate: "", count: "" }
   });
 
-  const manejarChange = (evento) => {
-    const { name, value } = evento.target;
+  useEffect(() => {
+    if (mostrar) {
+      setProducto({
+        id: productoInicial?.id ?? "",
+        title: productoInicial?.title ?? "",
+        price: productoInicial?.price ?? "",
+        description: productoInicial?.description ?? "",
+        category: productoInicial?.category ?? "",
+        image: productoInicial?.image ?? "",
+        rating: {
+          rate: productoInicial?.rating?.rate ?? "",
+          count: productoInicial?.rating?.count ?? ""
+        }
+      });
+      setErrores({});
+      setCargando(false);
+    }
+  }, [mostrar, productoInicial]);
+
+  const manejarChange = (e) => {
+    const { name, value } = e.target;
+
     if (name === "rate" || name === "count") {
-      setProducto({ ...producto, rating: { ...producto.rating, [name]: value } });
+      setProducto((prev) => ({
+        ...prev,
+        rating: { ...prev.rating, [name]: value }
+      }));
     } else {
-      setProducto({ ...producto, [name]: value });
+      setProducto((prev) => ({
+        ...prev,
+        [name]: value
+      }));
     }
   };
 
   const validarForm = () => {
     let nuevosErrores = {};
 
-    if (!producto.title.trim()) {
+    if (!producto.title.trim())
       nuevosErrores.title = "El título es obligatorio.";
-    }
 
-    if (!producto.price.trim()) {
+    if (!producto.price.trim())
       nuevosErrores.price = "El precio es obligatorio.";
-    } else if (isNaN(producto.price) || Number(producto.price) <= 0) {
-      nuevosErrores.price = "El precio debe ser un número positivo.";
-    }
+    else if (isNaN(producto.price) || Number(producto.price) <= 0)
+      nuevosErrores.price = "Debe ser un número positivo.";
 
-    if (!producto.description.trim() || producto.description.length < 10) {
-      nuevosErrores.description = "La descripción es obligatoria y debe tener al menos 10 caracteres.";
-    }
+    if (!producto.description.trim() || producto.description.length < 10)
+      nuevosErrores.description = "La descripción debe tener al menos 10 caracteres.";
 
-    if (!producto.category.trim()) {
+    if (!producto.category.trim())
       nuevosErrores.category = "La categoría es obligatoria.";
-    }
 
-    if (!producto.image.trim()) {
-      nuevosErrores.image = "La URL de la imagen es obligatoria.";
-    } else if (!/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(producto.image)) {
-      nuevosErrores.image = "Debe ser una URL válida de imagen (jpg, png, etc.).";
-    }
+    if (!producto.image.trim())
+      nuevosErrores.image = "La imagen es obligatoria.";
+    else if (!/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i.test(producto.image))
+      nuevosErrores.image = "Debe ser una URL válida de imagen.";
 
-    if (!producto.rating.rate.trim()) {
-      nuevosErrores.rate = "El rating (valoración) es obligatorio.";
-    } else if (isNaN(producto.rating.rate) || Number(producto.rating.rate) < 0 || Number(producto.rating.rate) > 5) {
-      nuevosErrores.rate = "El rating debe ser un número entre 0 y 5.";
-    }
+    if (!producto.rating.rate.trim())
+      nuevosErrores.rate = "El rating es obligatorio.";
+    else if (
+      isNaN(producto.rating.rate) ||
+      Number(producto.rating.rate) < 0 ||
+      Number(producto.rating.rate) > 5
+    )
+      nuevosErrores.rate = "Debe ser entre 0 y 5.";
 
-    if (!producto.rating.count.trim()) {
-      nuevosErrores.count = "El conteo de valoraciones es obligatorio.";
-    } else if (isNaN(producto.rating.count) || Number(producto.rating.count) < 0) {
-      nuevosErrores.count = "El conteo debe ser un número positivo.";
-    }
+    if (!producto.rating.count.trim())
+      nuevosErrores.count = "El conteo es obligatorio.";
+    else if (isNaN(producto.rating.count) || Number(producto.rating.count) < 0)
+      nuevosErrores.count = "Debe ser un número positivo.";
 
     setErrores(nuevosErrores);
+
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  const manejarSubmit = (evento) => {
-    evento.preventDefault();
-    if (validarForm()) {
-      onAgregar(producto);
-      setProducto({
-        title: "",
-        price: "",
-        description: "",
-        category: "",
-        image: "",
-        rating: { rate: "", count: "" }
-      });
-      setErrores({});
+  const manejarSubmit = async (e) => {
+    e.preventDefault();
+    if (cargando) return;
+
+    if (!validarForm()) return;
+
+    setCargando(true);
+
+    if (modo === "agregar") {
+      await agregarProducto(producto);
+    } else {
+      await editarProducto(producto);
     }
+
+    setCargando(false);
+    onCerrar();
   };
 
-   return (
-    <Container className="my-4 d-flex justify-content-center align-items-center">
-      <Card className="p-4 bg-dark text-light shadow-lg card1" style={{ maxWidth: "35rem" }}>
-        <Card.Body>
-          <Card.Title className="text-center mb-4 fs-3">Agregar Producto</Card.Title>
+  return (
+    <Modal 
+      show={mostrar} 
+      onHide={onCerrar} 
+      centered 
+      backdrop="static"
+      size="lg"
+    >
+      <Modal.Header closeButton className="bg-dark text-light">
+        <Modal.Title className="bg-dark text-light">
+          {modo === "agregar" ? "Agregar Producto" : "Editar Producto"}
+        </Modal.Title>
+      </Modal.Header>
 
-          <Form onSubmit={manejarSubmit}>
-            <Form.Group className="mb-3" controlId="formTitle">
+      <Modal.Body className="bg-dark text-light">
+        <Card className="p-3 bg-dark text-light border-0">
+          <Form id="formProducto" onSubmit={manejarSubmit}>
+            
+            <Form.Group className="mb-3">
               <Form.Label>Título</Form.Label>
               <Form.Control
                 type="text"
@@ -105,7 +142,7 @@ const FormProducto = ({ onAgregar }) => {
 
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="formPrice">
+                <Form.Group className="mb-3">
                   <Form.Label>Precio</Form.Label>
                   <Form.Control
                     type="number"
@@ -120,7 +157,7 @@ const FormProducto = ({ onAgregar }) => {
               </Col>
 
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="formCategory">
+                <Form.Group className="mb-3">
                   <Form.Label>Categoría</Form.Label>
                   <Form.Control
                     type="text"
@@ -135,21 +172,21 @@ const FormProducto = ({ onAgregar }) => {
               </Col>
             </Row>
 
-            <Form.Group className="mb-3" controlId="formDescription">
+            <Form.Group className="mb-3">
               <Form.Label>Descripción</Form.Label>
               <Form.Control
                 as="textarea"
-                rows={5}
+                rows={4}
                 name="description"
                 value={producto.description}
                 onChange={manejarChange}
-                placeholder="Breve descripción del producto"
+                placeholder="Descripción del producto"
                 isInvalid={!!errores.description}
               />
               <Form.Control.Feedback type="invalid">{errores.description}</Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formImage">
+            <Form.Group className="mb-3">
               <Form.Label>URL de Imagen</Form.Label>
               <Form.Control
                 type="url"
@@ -164,8 +201,8 @@ const FormProducto = ({ onAgregar }) => {
 
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="formRate">
-                  <Form.Label>Rating (0-5)</Form.Label>
+                <Form.Group className="mb-3">
+                  <Form.Label>Rating (0–5)</Form.Label>
                   <Form.Control
                     type="number"
                     step="0.1"
@@ -180,7 +217,7 @@ const FormProducto = ({ onAgregar }) => {
               </Col>
 
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="formCount">
+                <Form.Group className="mb-3">
                   <Form.Label>Cantidad de valoraciones</Form.Label>
                   <Form.Control
                     type="number"
@@ -194,21 +231,26 @@ const FormProducto = ({ onAgregar }) => {
                 </Form.Group>
               </Col>
             </Row>
-
-            <div className="text-center mt-4">
-              <Button
-                variant="success"
-                type="submit"
-                className="w-100 mt-4 shadow-sm">
-                Agregar producto
-              </Button>
-            </div>
           </Form>
-        </Card.Body>
-      </Card>
-    </Container>
+        </Card>
+      </Modal.Body>
+
+      <Modal.Footer className="bg-dark text-light d-flex">
+        <Button 
+              type="submit" 
+              form="formProducto"
+              variant="success"
+              disabled={cargando}
+              className="w-40 mt-3"
+            >
+              {cargando ? "Guardando..." : modo === "agregar" ? "Agregar producto" : "Actualizar producto"}
+            </Button>
+        <Button variant="danger" onClick={onCerrar} className="w-40 mt-3">
+          Cancelar
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
- 
 };
 
-export default FormProducto;
+export default FormularioProducto;

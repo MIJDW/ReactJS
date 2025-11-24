@@ -8,7 +8,8 @@ import Detalle from './components/Detalle';
 import Carrito from './components/Carrito';
 import Login from './components/Login';
 import Admin from './components/Admin';
-import RutaProtegida from './components/Rutas/RutaProtegida';
+import RutaProtegidaAdmin from './components/Rutas/RutaProtegidaAdmin';
+import RutaProtegidaGeneral from './components/Rutas/RutaProtegidaGeneral';
 function App() {
   return (
     <Container fluid className="p-0 app-container">
@@ -24,12 +25,14 @@ function App() {
 
           <Route 
           path={'/carrito'} 
-          element={<Carrito/>}/>
+          element={<RutaProtegidaGeneral>
+            <Carrito/>
+          </RutaProtegidaGeneral>}/>
 
           <Route path={'/admin'}
-          element={<RutaProtegida>
+          element={<RutaProtegidaAdmin>
               <Admin/>
-          </RutaProtegida>}/>
+          </RutaProtegidaAdmin>}/>
 
           <Route path={'/login'}
           element={<Login/>}/>

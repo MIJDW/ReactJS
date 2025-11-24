@@ -4,8 +4,8 @@ import { useAuthContext } from '../Contexto/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const FormularioDeInicio = () => {
-  const [usuario, setUsuario] = useState('');
-  const [contrasenia, setContrasenia] = useState('');
+  const [usuario, setUsuario] = useState('admin');
+  const [contrasenia, setContrasenia] = useState('1234');
   const { iniciarSesion } = useAuthContext();
   const navigate = useNavigate();
 
@@ -15,7 +15,8 @@ const FormularioDeInicio = () => {
       iniciarSesion(usuario);
       navigate('/admin');
     }else{
-      alert('Usuario o Contraseña invalido');
+      iniciarSesion(usuario);
+      navigate('/carrito');
     }
   }
   return (

@@ -22,7 +22,6 @@ const Header = ()=> {
                         </p>
                         <CarritoIcon cantidad={cantidad} />
                     </div>
-                    <FaUser size={24} />
 
                     {!usuario ? (
                         <Link to="/login" className="text-light d-flex align-items-center gap-1 text-decoration-none">

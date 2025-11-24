@@ -1,10 +1,9 @@
 import { useContext } from "react";
-import CartaSimple from "./Elementos/CartaSimple";
-import Main from "./Semantico/Main";
+import Main from "../Semantico/Main";
 import { Row, Col, Button, Card } from "react-bootstrap";
-import { CarritoContext } from "./Contexto/CarritoContext";
+import { CarritoContext } from "../Contexto/CarritoContext";
 const Carrito = () => {
-  const {carrito, eliminarCarrito, limpiarCarrito, total} = useContext(CarritoContext);
+  const {carrito, limpiarCarrito, total} = useContext(CarritoContext);
   return (
     <div className="my-4 mx-4">
       <Card className="mb-4 p-3 shadow-sm bg-dark">
@@ -22,8 +21,6 @@ const Carrito = () => {
       </Card>
       <Main
         productos={carrito}
-        Carta={CartaSimple}
-        eliminarCarrito={eliminarCarrito}
         mostrarAgregar={false}
         mostrarEliminar={true}
       />
