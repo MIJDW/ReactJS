@@ -3,11 +3,11 @@ import Header from './components/Semantico/Header'
 import Footer from './components/Semantico/Footer'
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import Inicio from './components/Inicio';
-import Detalle from './components/Detalle';
-import Carrito from './components/Carrito';
-import Login from './components/Login';
-import Admin from './components/Admin';
+import Inicio from './components/Paginas/Inicio'
+import Detalle from './components/Paginas/Detalle'
+import Carrito from './components/Paginas/Carrito'
+import Login from './components/Paginas/Login'
+import Admin from './components/Paginas/Admin'
 import RutaProtegidaAdmin from './components/Rutas/RutaProtegidaAdmin';
 import RutaProtegidaGeneral from './components/Rutas/RutaProtegidaGeneral';
 function App() {
