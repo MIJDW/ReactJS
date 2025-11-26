@@ -66,3 +66,22 @@ h1, h2, h3, h4, h5 {
   align-items: center;
   justify-content: center;
 }
+.pagination .page-item.active .page-link {
+  background-color: var(--bs-warning) !important;
+  border-color: var(--bs-warning) !important;
+  color: var(--bs-dark) !important; 
+  font-weight: bold;
+}
+.pagination .page-link:hover {
+  background-color: var(--bs-warning) !important;
+  border-color: var(--bs-warning) !important;
+  color: var(--bs-dark) !important;
+}
+.pagination .page-link:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.pagination .page-link:active {
+  outline: none !important;
+  box-shadow: none !important;
+}

@@ -4,7 +4,7 @@ import { useProductosContext } from "../Contexto/ProductoContext";
 import Main from "../Semantico/Main";
 
 const GestionProductos = () => {
-  const { productos, eliminarProducto } = useProductosContext();
+  const {productosFiltrados, eliminarProducto } = useProductosContext();
 
   const [mostrarForm, setMostrarForm] = useState(false);
   const [modoFormulario, setModoFormulario] = useState("agregar");
@@ -30,7 +30,7 @@ const GestionProductos = () => {
    return (
       <>
         <Main
-          productos={productos}
+          productos={productosFiltrados}
           detailed={false}
           mostrarAgregar={false}
           mostrarEliminar={false}

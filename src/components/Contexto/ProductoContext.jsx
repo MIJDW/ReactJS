@@ -5,12 +5,18 @@ export const ProductosProvider = ({ children }) => {
   const API = "https://6915352784e8bd126af9131c.mockapi.io/productos";
 
   const [productos, setProductos] = useState([]);
+  const [busqueda, setBusqueda] = useState("");
+
   const [cargandoProductos, setCargandoProductos] = useState(true);
   const [errorProductos, setErrorProductos] = useState(null);
 
   const [productoDetalle, setProductoDetalle] = useState(null);
   const [cargandoDetalle, setCargandoDetalle] = useState(false);
   const [errorDetalle, setErrorDetalle] = useState(null);
+
+  const productosFiltrados = productos.filter((p) =>
+    p.title.toLowerCase().startsWith(busqueda.toLowerCase())
+  );
 
   const cargarProductos = async () => {
     try {
@@ -124,6 +130,9 @@ export const ProductosProvider = ({ children }) => {
     <ProductosContext.Provider
       value={{
         productos,
+        productosFiltrados,
+        busqueda,
+        setBusqueda,
         cargandoProductos,
         errorProductos,
 
