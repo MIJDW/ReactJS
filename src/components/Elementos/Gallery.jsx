@@ -18,6 +18,9 @@ const Gallery = ({ useHook, productos: productosDirectos, detailed, mostrarAgreg
 
     const { id } = useParams();
 
+    const itemsPorPagina = 4;
+    const [paginaActual, setPaginaActual] = useState(1);
+
     useEffect(() => {
         if (detailed && id && cargarProductoPorId) {
             cargarProductoPorId(id);
@@ -48,14 +51,9 @@ const Gallery = ({ useHook, productos: productosDirectos, detailed, mostrarAgreg
     if (!items || items.length === 0)
         return <h1 className="text-center my-4">No hay productos para mostrar.</h1>;
 
-    const itemsPorPagina = 4;
-    const [paginaActual, setPaginaActual] = useState(1);
-
     const totalPaginas = Math.ceil(items.length / itemsPorPagina);
-
     const indexInicial = (paginaActual - 1) * itemsPorPagina;
     const indexFinal = indexInicial + itemsPorPagina;
-
     const itemsPaginados = items.slice(indexInicial, indexFinal);
 
     const cambiarPagina = (num) => {
