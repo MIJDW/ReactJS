@@ -23,7 +23,7 @@ const Carrito = () => {
         <Col md={3}>
           <Card className="my-4 p-3 shadow-sm bg-dark text-light sticky-top" style={{ top: "40px" }}>
 
-            <h5 className="text-center">Resumen del Pedido</h5>
+            <h5 className="text-center text-light">Resumen del Pedido</h5>
             <hr />
 
             <div className="d-flex justify-content-between">
