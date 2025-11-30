@@ -1,7 +1,8 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import CartaProducto from './CartaProducto';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { CarritoContext } from '../Contexto/CarritoContext';
 
 const Gallery = ({ useHook, productos: productosDirectos, detailed, mostrarAgregar, mostrarEliminar, esAdmin, onEditar, onEliminar }) => {  
 
@@ -16,9 +17,11 @@ const Gallery = ({ useHook, productos: productosDirectos, detailed, mostrarAgreg
         cargarProductoPorId
     } = useHook ? useHook() : {};
 
+    const {total} = useContext(CarritoContext);
+
     const { id } = useParams();
 
-    const itemsPorPagina = 4;
+    const itemsPorPagina = 8;
     const [paginaActual, setPaginaActual] = useState(1);
 
     useEffect(() => {

@@ -5,7 +5,7 @@ import { CarritoContext } from '../Contexto/CarritoContext';
 import { FaTrash, FaPen } from "react-icons/fa";
 
 const CartaProducto = ({product, detailed = false, mostrarAgregar = true, mostrarEliminar = false, esAdmin = false, onEditar, onEliminar}) => {
-    const {agregarCarrito, eliminarCarrito} = useContext(CarritoContext);
+    const {agregarCarrito, eliminarCarrito, restarCantidad} = useContext(CarritoContext);
   return (
     <Card
       className="mb-3 shadow-sm card1 bg-dark text-light"
@@ -54,8 +54,34 @@ const CartaProducto = ({product, detailed = false, mostrarAgregar = true, mostra
           )}
         </Card.Text>
 
-        <div className="d-flex justify-content-between mt-3">
-           {esAdmin ? (
+      <div className="d-flex flex-column mt-3">
+
+        {mostrarEliminar && (
+          <div className="d-flex align-items-center justify-content-between mb-2">
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              onClick={() => restarCantidad(product.id)}
+            >
+              -
+            </Button>
+
+            <span className="mx-2 fw-bold">{product.cantidad}</span>
+
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              onClick={() => agregarCarrito(product)}
+            >
+              +
+            </Button>
+            <span className="ms-3 fw-bold">
+              ${(product.cantidad * product.price).toFixed(2)}
+            </span>
+          </div>
+        )}
+        <div className="d-flex justify-content-between">
+          {esAdmin ? (
             <>
               <Button variant="warning" size="sm" onClick={() => onEditar(product)}>
                 <FaPen />
@@ -75,12 +101,13 @@ const CartaProducto = ({product, detailed = false, mostrarAgregar = true, mostra
 
               {mostrarEliminar && (
                 <Button variant="danger" size="sm" onClick={() => eliminarCarrito(product.id)}>
-                  Eliminar
+                  <FaTrash />
                 </Button>
               )}
             </>
           )}
         </div>
+      </div>
       </Card.Body>
     </Card>
   );
